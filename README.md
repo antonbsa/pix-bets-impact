@@ -111,7 +111,7 @@ A execução é realizada no **Databricks**, com tabelas Delta.
 - [ ] Camada silver com calendário e feriados
 - [ ] Camada gold com métricas comparativas
 - [ ] Reprodução da análise da notícia
-- [ ] Seed com as janelas das datas FIFA (fonte citada)
+- [x] Seed com as janelas das datas FIFA (fonte citada)
 - [ ] Análise complementar: Pix nas pausas da data FIFA
 - [ ] Análises ajustadas e conclusão
 
