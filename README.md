@@ -82,7 +82,7 @@ Os dados do BCB são **agregados diários de todo o Pix**, sem separação por s
 
 - Endpoint: `https://olinda.bcb.gov.br/olinda/servico/SPI/versao/v1/odata/PixLiquidadosAtual`
 - Granularidade: diária, desde 03/11/2020
-- Campos usados: `Data`, `Quantidade`, `Total` (em **milhares de R$**), `Media`
+- Campos usados: `Data`, `Quantidade`, `CanalPrimario`, `CanalSecundario`, `Total` (em **milhares de R$**), `Media` (em reais). `CanalPrimario` e `CanalSecundario` são nulos até 28/10/2023
 - Considera ordens de transferência (PACS008) e devoluções (PACS004)
 
 ## Arquitetura
@@ -95,7 +95,7 @@ API BCB ──> bronze ──> silver ──> gold ──> análise
 | Camada | Conteúdo |
 | --- | --- |
 | **bronze** | Resposta da API sem transformação, com data de extração. Imutável. |
-| **silver** | Dados tipados: `DATE`, valores em `DECIMAL`, conversão para reais, colunas de calendário (ano, mês, dia da semana, dia útil, feriado). |
+| **silver** | Dados tipados: `DATE`, valores em `DECIMAL`, conversão para reais e colunas de calendário (ano, mês, dia do mês, dia da semana, fim de semana) em `pix_diario`. Feriados e dia útil ficam em uma tabela de calendário própria, cruzada na gold. |
 | **gold** | Métricas analíticas: variação YoY, médias por dia da semana, janelas antes/depois do bloqueio, desvio em relação à tendência. |
 
 A execução é realizada no **Databricks**, com tabelas Delta.
@@ -107,8 +107,9 @@ A execução é realizada no **Databricks**, com tabelas Delta.
 - [x] Mapeamento da API e teste de extração
 - [x] Localizar a notícia original
 - [x] Documentar o recorte usado na notícia (períodos e métrica)
-- [ ] Ingestão bronze no Databricks
-- [ ] Camada silver com calendário e feriados
+- [x] Ingestão bronze no Databricks
+- [x] Silver `pix_diario` (tipagem, conversão para reais, colunas de calendário)
+- [ ] Silver: calendário de feriados e dia útil
 - [ ] Camada gold com métricas comparativas
 - [ ] Reprodução da análise da notícia
 - [x] Seed com as janelas das datas FIFA (fonte citada)
